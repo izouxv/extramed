@@ -1,0 +1,28 @@
+bastion: 192.168.90.220 => Rancher
+
+haproxy: 192.168.90.221
+
+masters
+	kubemaster01: 192.168.90.161
+	kubemaster02: 192.168.90.162
+	kubemaster03: 192.168.90.163
+
+	sudo docker run -d --privileged --restart=unless-stopped \
+		--net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run \
+	  rancher/rancher-agent:v2.6.4 --server https://192.168.90.220 \
+	  --token clfk75g98h59xxdv5pcsflwx8zgnnm9djqtrj4ltvcznzmzb78c7hc \
+	  --ca-checksum 01f16a133286debeb42659a63647cea765769f288d3791a1b153bc7a33d40b60 \
+	  --etcd --controlplane
+
+
+workers
+	kubeworker01: 192.168.90.165
+	kubeworker02: 192.168.90.166
+	kubeworker03: 192.168.90.167
+
+	sudo docker run -d --privileged --restart=unless-stopped \
+		--net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run  \
+		rancher/rancher-agent:v2.6.4 --server https://192.168.90.220 \
+		--token clfk75g98h59xxdv5pcsflwx8zgnnm9djqtrj4ltvcznzmzb78c7hc \
+		--ca-checksum 01f16a133286debeb42659a63647cea765769f288d3791a1b153bc7a33d40b60 \
+		--worker
