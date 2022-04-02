@@ -2,27 +2,46 @@ bastion: 192.168.90.220 => Rancher
 
 haproxy: 192.168.90.221
 
+dominio: *.ingress.extramed.com.br
+
 masters
 	kubemaster01: 192.168.90.161
 	kubemaster02: 192.168.90.162
 	kubemaster03: 192.168.90.163
 
-	sudo docker run -d --privileged --restart=unless-stopped \
-		--net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run \
-	  rancher/rancher-agent:v2.6.4 --server https://192.168.90.220 \
-	  --token clfk75g98h59xxdv5pcsflwx8zgnnm9djqtrj4ltvcznzmzb78c7hc \
-	  --ca-checksum 01f16a133286debeb42659a63647cea765769f288d3791a1b153bc7a33d40b60 \
-	  --etcd --controlplane
-
+	sudo docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run  rancher/rancher-agent:v2.6.4 --server https://192.168.90.220 --token fkqzx4mcsb89vtnzvfjh2dvfn77lnq4p8vdcmz8vdgmj2zjs6mk7wf --etcd --controlplane
 
 workers
 	kubeworker01: 192.168.90.165
 	kubeworker02: 192.168.90.166
 	kubeworker03: 192.168.90.167
 
-	sudo docker run -d --privileged --restart=unless-stopped \
-		--net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run  \
-		rancher/rancher-agent:v2.6.4 --server https://192.168.90.220 \
-		--token clfk75g98h59xxdv5pcsflwx8zgnnm9djqtrj4ltvcznzmzb78c7hc \
-		--ca-checksum 01f16a133286debeb42659a63647cea765769f288d3791a1b153bc7a33d40b60 \
-		--worker
+	sudo docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run  rancher/rancher-agent:v2.6.4 --server https://192.168.90.220 --token fkqzx4mcsb89vtnzvfjh2dvfn77lnq4p8vdcmz8vdgmj2zjs6mk7wf --worker
+
+
+	# Se precisar limpar os servidores sem formatar antes de executar os scripts acima.
+	docker stop  $(docker ps -qa) &&
+	docker rm -f $(docker ps -qa) &&
+  docker rmi -f $(docker images -q) &&
+  docker volume rm $(docker volume ls -q)
+
+  sudo rm -rf /etc/ceph \
+         /etc/cni \
+         /etc/kubernetes \
+         /opt/cni \
+         /opt/rke \
+         /run/secrets/kubernetes.io \
+         /run/calico \
+         /run/flannel \
+         /var/lib/calico \
+         /var/lib/etcd \
+         /var/lib/cni \
+         /var/lib/kubelet \
+         /var/lib/rancher/rke/log \
+         /var/log/containers \
+         /var/log/kube-audit \
+         /var/log/pods \
+         /var/run/calico
+
+ # reboot server
+ sudo reboot

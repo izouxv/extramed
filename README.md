@@ -11,3 +11,10 @@ Criar o cluster pela interface do Rancher
 # Instalação Traefic
 
 
+# Obvervações
+
+@Raphael, não consegui adiar o meu compromisso de hoje. Mas amanhã cedo eu mexo neste projeto.
+
+Vou disponibilizar um horário na segundo pra conversarmos.
+
+Infelizmente hoje não consigo avançar mais. Peço desculpa.
