@@ -18,12 +18,32 @@ git clone https://github.com/ralphsbaesso/extramed
 
 ````sh
 kubectl apply -k traefik22/
+
+````
+
+# Instalação Argo CD
+
+````sh
+kubectl create namespace argocd
+kubectl apply -k argo-cd
+
 ````
 
 # Obvervações
 
-@Raphael, não consegui adiar o meu compromisso de hoje. Mas amanhã cedo eu mexo neste projeto.
+## Ingress
+Traefik rodando, mas parece que a máquina *haproxy: 192.168.90.221* não está redirecinando.
 
-Vou disponibilizar um horário na segundo pra conversarmos.
+## Argo CD
+deployment *argocd-redis-ha-haproxy* pede 3 pode modificado para 1
 
-Infelizmente hoje não consigo avançar mais. Peço desculpa.
+deployment *argocd-repo-server* pede 2 pode modificado para 1
+
+deployment *argocd-server* pede 2 pode modificado para 1
+
+Porque quando eu subi só tinha 1 nó de Worker. Modificado pela interface do Rancher.
+
+
+
+
+
