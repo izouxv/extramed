@@ -9,15 +9,14 @@ masters
 	kubemaster02: 192.168.90.162
 	kubemaster03: 192.168.90.163
 
-	sudo docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run  rancher/rancher-agent:v2.6.4 --server https://192.168.90.220 --token fkqzx4mcsb89vtnzvfjh2dvfn77lnq4p8vdcmz8vdgmj2zjs6mk7wf --etcd --controlplane
+	sudo docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run  rancher/rancher-agent:v2.6.4 --server https://192.168.90.220 --token jpjc2tlfzhdxbjnx6cw84jxpmpkw6gm2hm7ccr8spf4pzd75rxhmr2 --ca-checksum 116c6e1cda441b1f4ba9b309627342b99e20c9b0039f6a58115802c60d28f6ae --etcd --controlplane
 
 workers
 	kubeworker01: 192.168.90.165
 	kubeworker02: 192.168.90.166
 	kubeworker03: 192.168.90.167
 
-	sudo docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run  rancher/rancher-agent:v2.6.4 --server https://192.168.90.220 --token fkqzx4mcsb89vtnzvfjh2dvfn77lnq4p8vdcmz8vdgmj2zjs6mk7wf --worker
-
+	sudo docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run  rancher/rancher-agent:v2.6.4 --server https://192.168.90.220 --token jpjc2tlfzhdxbjnx6cw84jxpmpkw6gm2hm7ccr8spf4pzd75rxhmr2 --ca-checksum 116c6e1cda441b1f4ba9b309627342b99e20c9b0039f6a58115802c60d28f6ae --worker
 
 	# Se precisar limpar os servidores sem formatar antes de executar os scripts acima.
 	docker stop  $(docker ps -qa) &&
@@ -27,6 +26,7 @@ workers
 
   sudo rm -rf /etc/ceph \
          /etc/cni \
+         /opt/rancher \
          /etc/kubernetes \
          /opt/cni \
          /opt/rke \

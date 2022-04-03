@@ -16,8 +16,6 @@ spec:
         app: traefik
 #        application: traefik-daemon-set
     spec:
-      nodeSelector:
-        job: main
       serviceAccountName: traefik-ingress-controller
       terminationGracePeriodSeconds: 60
       containers:

@@ -8,8 +8,17 @@ Setar a senha no Rancher
 
 Criar o cluster pela interface do Rancher
 
+# Baixar o projeto
+
+````sh
+git clone https://github.com/ralphsbaesso/extramed
+````
+
 # Instalação Traefic
 
+````sh
+kubectl apply -k traefik22/
+````
 
 # Obvervações
 
