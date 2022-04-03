@@ -44,12 +44,21 @@ spec:
     - host: show.ingress.extramed.com.br
       http:
         paths:
-          - backend:
-              serviceName: show-container-service
-              servicePort: 80
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: show-container-service
+                port:
+                  number: 80
+
     - host: show123.ingress.extramed.com.br
       http:
         paths:
-          - backend:
-              serviceName: show-container-service
-              servicePort: 80
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: show-container-service
+                port:
+                  number: 80
