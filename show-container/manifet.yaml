@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: show-container
+spec:
+  selector:
+    matchLabels:
+      app: show-container
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: show-container
+    spec:
+      containers:
+        - name: show-container
+          image: ralphbaesso/show-container
+          ports:
+            - containerPort: 4567
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: show-container-service
+spec:
+  type: ClusterIP
+  selector:
+    app: show-container
+  ports:
+    - port: 80
+      targetPort: 4567
+
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: show-container-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik
+#    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  rules:
+    - host: show.ingress.extramed.com.br
+      http:
+        paths:
+          - backend:
+              serviceName: show-container-service
+              servicePort: 80
+    - host: show123.ingress.extramed.com.br
+      http:
+        paths:
+          - backend:
+              serviceName: show-container-service
+              servicePort: 80
