@@ -51,7 +51,7 @@ Usando helm: [https://github.com/traefik/traefik-helm-chart]
 ```shell
 $ helm repo add traefik https://helm.traefik.io/traefik
 $ helm repo update
-$ helm install traefik traefik/traefik -f traefik-helm/values.yaml
+$ helm install -n traefik --create-namespace traefik traefik/traefik -f traefik-helm/values.yaml
 $ kubectl apply -f traefik-helm/dashboard
 ```
 
@@ -63,8 +63,8 @@ Ref: [https://www.arthurkoziel.com/setting-up-argocd-with-helm/]
 
 ```shell
 $ helm repo add argo-cd https://argoproj.github.io/argo-helm
-$ helm dep update .
-$ helm install argo-cd charts/argo-cd-4.5.0.tgz
+$ helm dep update argo-cd
+$ helm install -n argocd --create-namespace argo-cd argo-cd/charts/argo-cd-4.5.0.tgz
 $ kubectl apply -f dashboard/
 ```
 
