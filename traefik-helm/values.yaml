@@ -3,6 +3,8 @@ ingressRoute:
     enabled: true
     annotations: { traefik.ingress.kubernetes.io/router.tls: "true" }
 
+namespace: traefik
+
 ports:
   web:
     redirectTo: websecure
