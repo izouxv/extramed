@@ -62,7 +62,7 @@ spec:
             path: /
             backend:
               service:
-                name: show-container-service
+                name: show-container
                 port:
                   number: 80
 
@@ -73,6 +73,6 @@ spec:
             path: /
             backend:
               service:
-                name: show-container-service
+                name: show-container
                 port:
                   number: 80
