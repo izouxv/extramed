@@ -3,14 +3,12 @@ ingressRoute:
     enabled: true
     annotations: { traefik.ingress.kubernetes.io/router.tls: "true" }
 
-namespace: traefik
+service:
+  type: NodePort
 
 ports:
   web:
     redirectTo: websecure
-    nodePort: 8080
-  websecure:
-    nodePort: 8443
   ssh:
     port: 2222
     expose: true
