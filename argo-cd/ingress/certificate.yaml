@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: argocd-server-cert
+  namespace: argocd
+  labels:
+    "use-http01-solver": "true"
+spec:
+  commonName: argocd.ingress.extramed.com.br
+  secretName: argocd-server-cert
+  dnsNames:
+    - argocd.ingress.extramed.com.br
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
