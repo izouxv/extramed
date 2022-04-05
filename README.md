@@ -65,7 +65,7 @@ Ref: [https://www.arthurkoziel.com/setting-up-argocd-with-helm/]
 $ helm repo add argo-cd https://argoproj.github.io/argo-helm
 $ helm dep update argo-cd
 $ helm install -n argocd --create-namespace argo-cd argo-cd/charts/argo-cd-4.5.0.tgz
-$ kubectl apply -f dashboard/
+$ kubectl apply -f argo-cd/dashboard/
 ```
 
 Para obter a senha:
