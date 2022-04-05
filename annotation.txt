@@ -4,6 +4,8 @@ haproxy: 192.168.90.221
 
 dominio: *.ingress.extramed.com.br
 
+email: nucleoti@extramed.com.br
+
 masters
 	kubemaster01: 192.168.90.161
 	kubemaster02: 192.168.90.162
