@@ -22,9 +22,17 @@ ports:
     exposedPort: 22
     protocol: TCP
 
+service:
+  type: NodePort
+
 providers:
   kubernetesIngress:
     ingressClass: "traefik-cert-manager"
+    ingressEndpoint:
+      - 192.168.90.165
+      - 192.168.90.166
+      - 192.168.90.167
+
 
 additionalArguments:
   - "--log.level=INFO"
