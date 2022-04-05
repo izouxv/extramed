@@ -54,7 +54,15 @@ $ helm repo update
 $ helm install -n traefik --create-namespace traefik traefik/traefik -f traefik-helm/values.yaml
 $ kubectl apply -f traefik-helm/dashboard
 ```
+---
 
+## NGINX Ingress
+
+```shell
+$ helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
+```
 ___
 
 ## ArgoCD
