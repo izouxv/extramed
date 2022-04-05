@@ -44,20 +44,49 @@ git clone https://github.com/ralphsbaesso/extramed
 ````
 ___
 
-# Instalação Traefic
+## Traefik
 
-````sh
-kubectl apply -k traefik22/
-````
+Usando helm: [https://github.com/traefik/traefik-helm-chart]
+
+```shell
+$ helm repo add traefik https://helm.traefik.io/traefik
+$ helm repo update
+$ helm install traefik traefik/traefik -f traefik-helm/values.yaml
+```
+
 ___
 
-# cert-manager
+## ArgoCD
 
-*Não foi instalado*. Vai ser via Helm.
-Se o Helm falhar pode utilizar o recurso abaixo.
+Ref: [https://www.arthurkoziel.com/setting-up-argocd-with-helm/]
+
+```shell
+$ helm repo add argo-cd https://argoproj.github.io/argo-helm
+$ helm dep update .
+$ helm install argo-cd charts/argo-cd-4.5.0.tgz
+$ kubectl apply -f dashboard/
 ```
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.7.2/cert-manager.yaml
+
+Para obter a senha:
+
+```shell
+$ kubectl -n default get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
 
-Depois aplicar o manifestos *issuer/manifest.yaml*
+---
 
+## Cert Manager
+
+Usando helm para instalar o cert-manager [https://cert-manager.io/docs/installation/helm/]
+
+```shell
+$ helm repo add jetstack https://charts.jetstack.io
+$ helm repo update
+$ helm install \
+  cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --version v1.7.2 \
+  --set installCRDs=true
+$ kubectl apply -f letsencrypt-prod.yaml
+```

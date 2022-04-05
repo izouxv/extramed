@@ -1,0 +1,20 @@
+ingressRoute:
+  dashboard:
+    enabled: true
+    annotations: { traefik.ingress.kubernetes.io/router.tls: "true" }
+
+ports:
+  web:
+    redirectTo: websecure
+  ssh:
+    port: 2222
+    expose: true
+    exposedPort: 22
+    protocol: TCP
+
+additionalArguments:
+  - "--log.level=INFO"
+  - "--entrypoints.websecure.http.tls"
+  - "--providers.kubernetesIngress.ingressClass=traefik-cert-manager"
+  - "--ping"
+  #  - "--metrics.prometheus"

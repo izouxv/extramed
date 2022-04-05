@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: traefik-dashboard-cert
+  namespace: traefik
+  labels:
+    "use-http01-solver": "true"
+spec:
+  commonName: traefik.ingress.extramed.com.br
+  secretName: traefik-dashboard-cert
+  dnsNames:
+    - traefik.ingress.extramed.com.br
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
