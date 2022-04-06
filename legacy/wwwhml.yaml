@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: legacy-site-hml
+  namespace: legacy
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  clusterIP: None
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: legacy-site-hml
+  namespace: legacy
+subsets:
+  - addresses:
+      - ip: 192.168.90.52
+    ports:
+      - name: http
+        port: 80
+        protocol: TCP
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: legacy-site-hml-cert
+  namespace: legacy
+  labels:
+    "use-http01-solver": "true"
+spec:
+  commonName: wwwhml.extramed.com.br
+  secretName: legacy-site-hml-cert
+  dnsNames:
+    - wwwhml.extramed.com.br
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: legacy-site-hml
+  namespace: legacy
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`wwwhml.extramed.com.br`)
+      services:
+        - name: legacy-site-hml
+          port: 80
+  tls:
+    secretName: legacy-site-hml-cert
