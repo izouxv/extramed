@@ -13,3 +13,6 @@ spec:
       - http01:
           ingress:
             class: nginx
+        selector:
+          matchLabels:
+            "use-http01-solver": "true"
