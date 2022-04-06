@@ -51,7 +51,8 @@ Usando helm: [https://github.com/traefik/traefik-helm-chart]
 ```shell
 $ helm repo add traefik https://helm.traefik.io/traefik
 $ helm repo update
-$ helm install -n traefik --create-namespace traefik traefik/traefik -f traefik-helm/values.yaml
+$ helm upgrade --install -n traefik --create-namespace \
+  traefik traefik/traefik -f traefik-helm/values.yaml
 $ kubectl apply -f traefik-helm/dashboard
 ```
 ---
