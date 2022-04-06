@@ -27,30 +27,37 @@ subsets:
         protocol: TCP
 
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: legacy-canal-corretor-cert
+  namespace: legacy
+  labels:
+    "use-http01-solver": "true"
+spec:
+  commonName: canalcorretor.extramed.com.br
+  secretName: legacy-canal-corretor-cert
+  dnsNames:
+    - canalcorretor.extramed.com.br
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
   name: legacy-canal-corretor
   namespace: legacy
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-body-size: 100M
 spec:
-  ingressClassName: nginx
-  rules:
-    - host: canalcorretor.extramed.com.br
-      http:
-        paths:
-          - pathType: Prefix
-            backend:
-              service:
-                name: legacy-canal-corretor
-                port:
-                  number: 80
-            path: /
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`canalcorretor.extramed.com.br`)
+      priority: 10
+      services:
+        - name: legacy-canal-corretor
+          port: 80
   tls:
-    - hosts:
-        - canalcorretor.extramed.com.br
-      secretName: legacy-canal-corretor-cert
+    secretName: legacy-canal-corretor-cert

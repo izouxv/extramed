@@ -27,30 +27,37 @@ subsets:
         protocol: TCP
 
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: legacy-egeon-club-cert
+  namespace: legacy
+  labels:
+    "use-http01-solver": "true"
+spec:
+  commonName: egeonclub.extramed.com.br
+  secretName: legacy-egeon-club-cert
+  dnsNames:
+    - egeonclub.extramed.com.br
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
   name: legacy-egeon-club
   namespace: legacy
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-body-size: 100M
 spec:
-  ingressClassName: nginx
-  rules:
-    - host: egeonclub.extramed.com.br
-      http:
-        paths:
-          - pathType: Prefix
-            backend:
-              service:
-                name: legacy-egeon-club
-                port:
-                  number: 80
-            path: /
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`egeonclub.extramed.com.br`)
+      priority: 10
+      services:
+        - name: legacy-egeon-club
+          port: 80
   tls:
-    - hosts:
-        - egeonclub.extramed.com.br
-      secretName: legacy-egeon-club-cert
+    secretName: legacy-egeon-club-cert

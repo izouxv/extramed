@@ -27,41 +27,73 @@ subsets:
         protocol: TCP
 
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: cert-manager.io/v1
+kind: Certificate
 metadata:
-  name: legacy-site
+  name: legacy-site-www-cert
   namespace: legacy
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-body-size: 100M
+  labels:
+    "use-http01-solver": "true"
 spec:
-  ingressClassName: nginx
-  rules:
-    - host: extramed.com.br
-      http:
-        paths:
-          - pathType: Prefix
-            backend:
-              service:
-                name: legacy-site
-                port:
-                  number: 80
-            path: /
-    - host: www.extramed.com.br
-      http:
-        paths:
-          - pathType: Prefix
-            backend:
-              service:
-                name: legacy-site
-                port:
-                  number: 80
-            path: /
+  commonName: www.extramed.com.br
+  secretName: legacy-site-www-cert
+  dnsNames:
+    - www.extramed.com.br
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: legacy-site-www
+  namespace: legacy
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`www.extramed.com.br`)
+      priority: 10
+      services:
+        - name: legacy-site
+          port: 80
   tls:
-    - hosts:
-        - extramed.com.br
-        - www.extramed.com.br
-      secretName: legacy-site-cert
+    secretName: legacy-site-www-cert
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: legacy-site-root-cert
+  namespace: legacy
+  labels:
+    "use-http01-solver": "true"
+spec:
+  commonName: extramed.com.br
+  secretName: legacy-site-root-cert
+  dnsNames:
+    - extramed.com.br
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: legacy-site-root
+  namespace: legacy
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`extramed.com.br`)
+      priority: 10
+      services:
+        - name: legacy-site
+          port: 80
+  tls:
+    secretName: legacy-site-root-cert
