@@ -4,7 +4,7 @@ ingressRoute:
     annotations: { traefik.ingress.kubernetes.io/router.tls: "true" }
 
 deployment:
-  kind: DaemonSet
+  kind: Deployment
 
 logs:
   general:
