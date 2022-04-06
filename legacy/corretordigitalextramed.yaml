@@ -1,13 +1,77 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: legacy-corretordigitalextramed
+  namespace: legacy
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  clusterIP: None
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: legacy-corretordigitalextramed
+  namespace: legacy
+subsets:
+  - addresses:
+      - ip: 192.168.90.2
+    ports:
+      - name: http
+        port: 80
+        protocol: TCP
+
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: legacy-corretordigitalextramed-cert
+  name: legacy-corretordigitalextramed-www-cert
+  namespace: legacy
+  labels:
+    "use-http01-solver": "true"
+spec:
+  commonName: www.corretordigitalextramed.com.br
+  secretName: legacy-corretordigitalextramed-www-cert
+  dnsNames:
+    - www.corretordigitalextramed.com.br
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: legacy-corretordigitalextramed-www
+  namespace: legacy
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`www.corretordigitalextramed.com.br`)
+      services:
+        - name: legacy-corretordigitalextramed
+          port: 80
+  tls:
+    secretName: legacy-corretordigitalextramed-www-cert
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: legacy-corretordigitalextramed-root-cert
   namespace: legacy
   labels:
     "use-http01-solver": "true"
 spec:
   commonName: corretordigitalextramed.com.br
-  secretName: legacy-corretordigitalextramed-cert
+  secretName: legacy-corretordigitalextramed-root-cert
   dnsNames:
     - corretordigitalextramed.com.br
   issuerRef:
@@ -18,7 +82,7 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: legacy-corretordigitalextramed
+  name: legacy-corretordigitalextramed-root
   namespace: legacy
 spec:
   entryPoints:
@@ -30,27 +94,4 @@ spec:
         - name: legacy-corretordigitalextramed
           port: 80
   tls:
-    secretName: legacy-egeon-club-cert
-
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: legacy-corretordigitalextramed
-  namespace: legacy
-spec:
-  redirectRegex:
-    regex: ^http[s]?://(www.)?corretordigitalextramed.com.br/(.*)
-    replacement: https://www.extramed.com.br/vendaonline/corretor
-
-
-#---
-#apiVersion: traefik.containo.us/v1alpha1
-#kind: Middleware
-#metadata:
-#  name: legacy-corretordigitalextramed
-#  namespace: legacy
-#spec:
-#  redirectRegex:
-#    regex: ^http[s]?://www.corretordigitalextramed.com.br/(.*)
-#    replacement: https://www.extramed.com.br/vendaonline/corretor
+    secretName: legacy-corretordigitalextramed-root-cert
