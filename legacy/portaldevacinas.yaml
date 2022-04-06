@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: legacy-portal-de-vacinas
+  namespace: legacy
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  clusterIP: None
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: legacy-portal-de-vacinas
+  namespace: legacy
+subsets:
+  - addresses:
+      - ip: 192.168.90.52
+    ports:
+      - name: http
+        port: 80
+        protocol: TCP
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: legacy-portal-de-vacinas-www-cert
+  namespace: legacy
+  labels:
+    "use-http01-solver": "true"
+spec:
+  commonName: www.portaldevacinas.com.br
+  secretName: legacy-portal-de-vacinas-www-cert
+  dnsNames:
+    - www.portaldevacinas.com.br
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: legacy-portal-de-vacinas-www
+  namespace: legacy
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`www.portaldevacinas.com.br`)
+      services:
+        - name: legacy-portal-de-vacinas
+          port: 80
+  tls:
+    secretName: legacy-portal-de-vacinas-www-cert
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: legacy-portal-de-vacinas-root-cert
+  namespace: legacy
+  labels:
+    "use-http01-solver": "true"
+spec:
+  commonName: portaldevacinas.com.br
+  secretName: legacy-portal-de-vacinas-root-cert
+  dnsNames:
+    - portaldevacinas.com.br
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: legacy-portal-de-vacinas-root
+  namespace: legacy
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`portaldevacinas.com.br`)
+      services:
+        - name: legacy-portal-de-vacinas
+          port: 80
+  tls:
+    secretName: legacy-portal-de-vacinas-root-cert

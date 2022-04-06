@@ -1,0 +1,20 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: legacy-corretordigitalextramed
+  namespace: legacy
+spec:
+  redirectRegex:
+    regex: ^http[s]?://corretordigitalextramed.com.br/(.*)
+    replacement: https://www.extramed.com.br/vendaonline/corretor
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: legacy-corretordigitalextramed
+  namespace: legacy
+spec:
+  redirectRegex:
+    regex: ^http[s]?://www.corretordigitalextramed.com.br/(.*)
+    replacement: https://www.extramed.com.br/vendaonline/corretor

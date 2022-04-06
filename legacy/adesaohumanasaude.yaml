@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: legacy-adesao-humana-saude
+  namespace: legacy
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  clusterIP: None
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: legacy-adesao-humana-saude
+  namespace: legacy
+subsets:
+  - addresses:
+      - ip: 192.168.90.52
+    ports:
+      - name: http
+        port: 80
+        protocol: TCP
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: legacy-adesao-humana-saude-www-cert
+  namespace: legacy
+  labels:
+    "use-http01-solver": "true"
+spec:
+  commonName: www.adesaohumanasaude.com.br
+  secretName: legacy-adesao-humana-saude-www-cert
+  dnsNames:
+    - www.adesaohumanasaude.com.br
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: legacy-adesao-humana-saude-www
+  namespace: legacy
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`www.adesaohumanasaude.com.br`)
+      services:
+        - name: legacy-adesao-humana-saude
+          port: 80
+  tls:
+    secretName: legacy-adesao-humana-saude-www-cert
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: legacy-adesao-humana-saude-root-cert
+  namespace: legacy
+  labels:
+    "use-http01-solver": "true"
+spec:
+  commonName: adesaohumanasaude.com.br
+  secretName: legacy-adesao-humana-saude-root-cert
+  dnsNames:
+    - adesaohumanasaude.com.br
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: legacy-adesao-humana-saude-root
+  namespace: legacy
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`adesaohumanasaude.com.br`)
+      services:
+        - name: legacy-adesao-humana-saude
+          port: 80
+  tls:
+    secretName: legacy-adesao-humana-saude-root-cert
