@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: legacy-site
+  namespace: legacy
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  clusterIP: None
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: legacy-site
+  namespace: legacy
+subsets:
+  - addresses:
+      - ip: 192.168.90.52
+    ports:
+      - name: http
+        port: 80
+        protocol: TCP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: legacy-site
+  namespace: legacy
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 100M
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: extramed.com.br
+      http:
+        paths:
+          - pathType: Prefix
+            backend:
+              service:
+                name: legacy-site
+                port:
+                  number: 80
+            path: /
+    - host: www.extramed.com.br
+      http:
+        paths:
+          - pathType: Prefix
+            backend:
+              service:
+                name: legacy-site
+                port:
+                  number: 80
+            path: /
+  tls:
+    - hosts:
+        - extramed.com.br
+        - www.extramed.com.br
+      secretName: legacy-site-cert
