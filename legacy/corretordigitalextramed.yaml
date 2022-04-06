@@ -1,12 +1,36 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: legacy-corretordigitalextramed-cert
+  namespace: legacy
+  labels:
+    "use-http01-solver": "true"
+spec:
+  commonName: corretordigitalextramed.com.br
+  secretName: legacy-corretordigitalextramed-cert
+  dnsNames:
+    - corretordigitalextramed.com.br
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+---
 apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
+kind: IngressRoute
 metadata:
   name: legacy-corretordigitalextramed
   namespace: legacy
 spec:
-  redirectRegex:
-    regex: ^http[s]?://corretordigitalextramed.com.br/(.*)
-    replacement: https://www.extramed.com.br/vendaonline/corretor
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`corretordigitalextramed.com.br`)
+      services:
+        - name: legacy-corretordigitalextramed
+          port: 80
+  tls:
+    secretName: legacy-egeon-club-cert
 
 ---
 apiVersion: traefik.containo.us/v1alpha1
@@ -16,5 +40,17 @@ metadata:
   namespace: legacy
 spec:
   redirectRegex:
-    regex: ^http[s]?://www.corretordigitalextramed.com.br/(.*)
+    regex: ^http[s]?://(www.)?corretordigitalextramed.com.br/(.*)
     replacement: https://www.extramed.com.br/vendaonline/corretor
+
+
+#---
+#apiVersion: traefik.containo.us/v1alpha1
+#kind: Middleware
+#metadata:
+#  name: legacy-corretordigitalextramed
+#  namespace: legacy
+#spec:
+#  redirectRegex:
+#    regex: ^http[s]?://www.corretordigitalextramed.com.br/(.*)
+#    replacement: https://www.extramed.com.br/vendaonline/corretor
