@@ -5,10 +5,10 @@ metadata:
   namespace: legacy
 spec:
   ports:
-    - name: http
-      port: 80
+    - name: https
+      port: 32443
       protocol: TCP
-      targetPort: 80
+      targetPort: 32443
   clusterIP: None
   type: ClusterIP
 
