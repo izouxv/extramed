@@ -1,11 +1,118 @@
-argo-cd:
-  dex:
-    enabled: false
-  server:
-    extraArgs:
-      - --insecure
-    config:
-      repositories: |
-        - type: helm
-          name: argo-cd
-          url: https://argoproj.github.io/argo-helm
+dex:
+  enabled: false
+server:
+  extraArgs:
+    - --insecure
+  config:
+    repositories: |
+      - type: helm
+        name: argo-cd
+        url: https://argoproj.github.io/argo-helm
+#    certificate:
+#      enabled: true
+#      domain: argocd.ingress.extramed.com.br
+#      issuer:
+#        kind: ClusterIssuer
+#        name: letsencrypt-prod
+#      secretName: argocd-server-tls
+#    ingress:
+#      enabled: true
+#      annotations: { }
+#      labels: { }
+#      ingressClassName: nginx
+#      hosts:
+#        - argocd.ingress.extramed.com.br
+#      paths:
+#        - /
+#      pathType: Prefix
+#      extraPaths:
+#        [ ]
+#        # - path: /*
+#        #   backend:
+#        #     serviceName: ssl-redirect
+#        #     servicePort: use-annotation
+#        ## for Kubernetes >=1.19 (when "networking.k8s.io/v1" is used)
+#        # - path: /*
+#        #   pathType: Prefix
+#        #   backend:
+#        #     service:
+#        #       name: ssl-redirect
+#      #       port:
+#      #         name: use-annotation
+#
+#      # -- Ingress TLS configuration
+#      tls:
+#        [ ]
+#        # - secretName: argocd-tls-certificate
+#      #   hosts:
+#      #     - argocd.example.com
+#
+#      # -- Uses `server.service.servicePortHttps` instead `server.service.servicePortHttp`
+#      https: false
+#
+#    # dedicated ingress for gRPC as documented at
+#    # Ref: https://argoproj.github.io/argo-cd/operator-manual/ingress/
+#    ingressGrpc:
+#      # -- Enable an ingress resource for the Argo CD server for dedicated [gRPC-ingress]
+#      enabled: false
+#      # -- Setup up gRPC ingress to work with an AWS ALB
+#      isAWSALB: false
+#      # -- Additional ingress annotations for dedicated [gRPC-ingress]
+#      annotations: { }
+#      # -- Additional ingress labels for dedicated [gRPC-ingress]
+#      labels: { }
+#      # -- Defines which ingress controller will implement the resource [gRPC-ingress]
+#      ingressClassName: ""
+#
+#      awsALB:
+#        # -- Service type for the AWS ALB gRPC service
+#        ## Service Type if isAWSALB is set to true
+#        ## Can be of type NodePort or ClusterIP depending on which mode you are
+#        ## are running. Instance mode needs type NodePort, IP mode needs type
+#        ## ClusterIP
+#        ## Ref: https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/how-it-works/#ingress-traffic
+#        serviceType: NodePort
+#        # -- Backend protocol version for the AWS ALB gRPC service
+#        ## This tells AWS to send traffic from the ALB using HTTP2. Can use gRPC as well if you want to leverage gRPC specific features
+#        backendProtocolVersion: HTTP2
+#
+#      # -- List of ingress hosts for dedicated [gRPC-ingress]
+#      ## Argo Ingress.
+#      ## Hostnames must be provided if Ingress is enabled.
+#      ## Secrets must be manually created in the namespace
+#      ##
+#      hosts:
+#        [ ]
+#      # - argocd.example.com
+#
+#      # -- List of ingress paths for dedicated [gRPC-ingress]
+#      paths:
+#        - /
+#      # -- Ingress path type for dedicated [gRPC-ingress]. One of `Exact`, `Prefix` or `ImplementationSpecific`
+#      pathType: Prefix
+#      # -- Additional ingress paths for dedicated [gRPC-ingress]
+#      extraPaths:
+#        [ ]
+#        # - path: /*
+#        #   backend:
+#        #     serviceName: ssl-redirect
+#        #     servicePort: use-annotation
+#        ## for Kubernetes >=1.19 (when "networking.k8s.io/v1" is used)
+#        # - path: /*
+#        #   pathType: Prefix
+#        #   backend:
+#        #     service:
+#        #       name: ssl-redirect
+#      #       port:
+#      #         name: use-annotation
+#
+#      # -- Ingress TLS configuration for dedicated [gRPC-ingress]
+#      tls:
+#        [ ]
+#        # - secretName: argocd-tls-certificate
+#      #   hosts:
+#      #     - argocd.example.com
+#
+#      # -- Uses `server.service.servicePortHttps` instead `server.service.servicePortHttp`
+#      https: false
+#

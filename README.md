@@ -61,7 +61,7 @@ $ kubectl apply -f traefik-helm/dashboard
 ```shell
 $ helm upgrade --install ingress-nginx ingress-nginx \
   --repo https://kubernetes.github.io/ingress-nginx \
-  --namespace ingress-nginx --create-namespace
+  --namespace ingress-nginx --create-namespace -f nginx-ingress/values.yaml
 ```
 ___
 
@@ -72,7 +72,8 @@ Ref: [https://www.arthurkoziel.com/setting-up-argocd-with-helm/]
 ```shell
 $ helm repo add argo-cd https://argoproj.github.io/argo-helm
 $ helm dep update argo-cd
-$ helm install -n argocd --create-namespace argo-cd argo-cd/charts/argo-cd-4.5.0.tgz
+$ helm upgrade --install -n argocd --create-namespace \
+  -f argo-cd/values.yaml argo-cd argo-cd/charts/argo-cd-4.5.0.tgz
 $ kubectl apply -f argo-cd/dashboard/
 ```
 
