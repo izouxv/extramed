@@ -57,7 +57,7 @@ spec:
       match: Host(`www.corretordigitalextramed.com.br`)
       services:
         - name: legacy-corretordigitalextramed
-          port: 80
+          port: 32443
   tls:
     secretName: legacy-corretordigitalextramed-www-cert
 
@@ -92,6 +92,6 @@ spec:
       match: Host(`corretordigitalextramed.com.br`)
       services:
         - name: legacy-corretordigitalextramed
-          port: 80
+          port: 32443
   tls:
     secretName: legacy-corretordigitalextramed-root-cert
