@@ -55,7 +55,6 @@ spec:
   routes:
     - kind: Rule
       match: Host(`canalcorretor.extramed.com.br`)
-      priority: 10
       services:
         - name: legacy-canal-corretor
           port: 80
